@@ -1,0 +1,30 @@
+/* ---------- Product pages ---------- */
+/* Screenshot cards floating around the laptop */
+.f-card { padding: 6px; border-radius: 16px; overflow: hidden; }
+.f-card img { border-radius: 11px; }
+.f-card--l { left: -7%; bottom: 30px; width: 38%; transform: translateZ(150px) rotateZ(-3deg); animation-delay: -2s; }
+.f-card--r { right: -3%; top: -10px; width: 26%; transform: translateZ(130px) rotateZ(2deg); animation-delay: -4s; }
+.f-chip--t { left: 14%; top: 4px; transform: translateZ(80px); }
+body[data-page='product-platera'] .f-stat { right: auto; left: 52%; top: auto; bottom: 10px; transform: translateZ(110px); }
+
+/* Plans */
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: stretch; }
+.plan { position: relative; display: flex; flex-direction: column; padding: 2rem 1.8rem; border-radius: var(--radius); background: var(--card-bg); border: 1px solid var(--border); }
+.plan--pop { border-color: var(--ring); background: linear-gradient(180deg, var(--soft), transparent 60%), var(--surface); box-shadow: 0 30px 70px -40px color-mix(in oklab, var(--c2) 60%, transparent); }
+.plan-badge { position: absolute; top: -13px; left: 1.8rem; padding: 4px 12px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 0.75rem; font-weight: 700; }
+.plan h3 { font-size: 1.5rem; }
+.plan-sub { margin-top: 0.3rem; color: var(--muted); font-size: 0.92rem; }
+.plan-price { margin-top: 1.2rem; font-family: var(--display); font-size: 1.35rem; font-weight: 800; }
+.plan-price small { display: block; font-family: var(--sans); font-size: 0.82rem; font-weight: 500; color: var(--muted); }
+.plan .ticks { margin-bottom: 1.6rem; font-size: 0.95rem; }
+.plan-cta { margin-top: auto; }
+.plan-cta .btn { width: 100%; }
+
+@media (max-width: 1020px) {
+  .plans { grid-template-columns: 1fr; max-width: 560px; margin: 0 auto; }
+}
+@media (max-width: 760px) {
+  .f-card--l { width: 44%; left: 0; bottom: 8px; transform: translateZ(60px) rotateZ(-3deg); }
+  .f-card--r, .f-chip--t { display: none; }
+  body[data-page='product-platera'] .f-stat { left: auto; right: 4%; }
+}

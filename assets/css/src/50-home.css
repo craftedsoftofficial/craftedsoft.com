@@ -1,0 +1,19 @@
+/* ---------- Home page ---------- */
+/* Screenshots with a light and a dark version swap with the theme */
+:root:not([data-theme='dark']) .on-dark, :root[data-theme='dark'] .on-light { display: none !important; }
+
+/* Pricing: a card of four plain-words rows */
+.price-card { display: grid; gap: 0.4rem; padding: 1.4rem; }
+.price-row { display: grid; grid-template-columns: 48px minmax(0, 1fr); gap: 1rem; align-items: start; padding: 0.9rem 0.4rem; }
+.price-row + .price-row { border-top: 1px solid var(--border); }
+.price-row h3 { margin: 0.1rem 0 0; }
+.price-row p { margin-top: 0.3rem; color: var(--text-2); font-size: 0.95rem; }
+
+/* Products pointer: businesses we work with, as a pill cloud */
+.sister .sister-card .pills--grid { justify-content: flex-start; align-content: center; }
+.sister .sister-card .pills--grid span:last-child { border-style: dashed; color: var(--kicker); }
+
+/* Home hero: a longer headline than a product name, so a little smaller; receipt kept clear of the text */
+body[data-page='home'] .hero h1 { font-size: clamp(2.6rem, 5vw, 4.7rem); }
+body[data-page='home'] .hero h1 .grad { display: inline; }
+body[data-page='home'] .f-receipt { left: 2%; }

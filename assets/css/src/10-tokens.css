@@ -1,0 +1,93 @@
+/* =====================================================================
+   CraftedSoft · design tokens
+   Layout and components follow the Delog Commerce design. Colours come in two layers:
+   1. Theme (light / dark, the sun-moon button): surfaces, text and lines.
+   2. Scheme (the colour button, theme.schemes in site-data.js): the gradient, glows and highlights.
+      'mono' is professional black & white; the others are colour gradients.
+   ===================================================================== */
+:root {
+  --display: 'Plus Jakarta Sans', 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --radius: 22px;
+  --header-h: 76px;
+  /* Page width: fills wide screens (up to 1760 px) with a side gutter that grows with the screen. */
+  --gutter: clamp(16px, 4vw, 72px);
+  --wrap: min(1760px, calc(100% - 2 * var(--gutter)));
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --wa: #25d366;
+  --mx: 0;
+  --my: 0;
+}
+
+/* ---------- Theme: light (white) ---------- */
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --bg-2: #f6f6f7;
+  --surface: rgb(0 0 0 / 0.028);
+  --surface-2: rgb(0 0 0 / 0.055);
+  --border: rgb(0 0 0 / 0.085);
+  --border-2: rgb(0 0 0 / 0.15);
+  --text: #0a0a0c;
+  --text-2: #42424a;
+  --muted: #74747e;
+  --panel: #ffffff;
+  --glass: rgb(255 255 255 / 0.74);
+  --card-bg: linear-gradient(160deg, rgb(0 0 0 / 0.02), rgb(0 0 0 / 0.005));
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.05), 0 12px 30px -16px rgb(0 0 0 / 0.18);
+  --shadow-2: 0 2px 6px rgb(0 0 0 / 0.05), 0 40px 90px -36px rgb(0 0 0 / 0.35);
+  --shot-shadow: 0 30px 70px -30px rgb(0 0 0 / 0.35), 0 0 0 1px rgb(0 0 0 / 0.06);
+  --floor-line: rgb(0 0 0 / 0.07);
+  --frame: #f4f4f5;
+  --frame-bar: #e9e9ec;
+}
+
+/* ---------- Theme: dark (deep black) ---------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #050506;
+  --bg-2: #0c0c0f;
+  --surface: rgb(255 255 255 / 0.045);
+  --surface-2: rgb(255 255 255 / 0.075);
+  --border: rgb(255 255 255 / 0.09);
+  --border-2: rgb(255 255 255 / 0.16);
+  --text: #f5f5f7;
+  --text-2: #c2c3cb;
+  --muted: #8a8b95;
+  --panel: #111114;
+  --glass: rgb(17 17 20 / 0.72);
+  --card-bg: linear-gradient(160deg, rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.02));
+  --shadow-1: 0 18px 40px -20px rgb(0 0 0 / 0.9);
+  --shadow-2: 0 50px 110px -40px rgb(0 0 0 / 0.95);
+  --shot-shadow: 0 40px 90px -30px rgb(0 0 0 / 0.9), 0 0 0 1px rgb(255 255 255 / 0.08);
+  --floor-line: rgb(255 255 255 / 0.1);
+  --frame: #17171b;
+  --frame-bar: #1f1f24;
+}
+
+/* ---------- Scheme: shared formulas (every scheme sets --c1, --c2, --c3) ---------- */
+:root {
+  --grad: linear-gradient(120deg, var(--c1) 0%, var(--c2) 55%, var(--c3) 110%);
+  --primary: var(--grad);
+  --on-primary: #ffffff;
+  --primary-shadow: 0 10px 30px -10px color-mix(in oklab, var(--c2) 70%, transparent), inset 0 1px 0 rgb(255 255 255 / 0.25);
+  --hl: var(--grad);
+  --kicker: color-mix(in oklab, var(--c1) 72%, var(--text));
+  --tick: var(--c1);
+  --soft: color-mix(in oklab, var(--c2) 14%, transparent);
+  --ring: color-mix(in oklab, var(--c2) 45%, transparent);
+  --aurora-1: var(--c1);
+  --aurora-2: var(--c2);
+  --aurora-3: var(--c3);
+  --aurora-o: 0.32;
+  --panel-grad: var(--grad);
+  --on-panel: #ffffff;
+}
+:root[data-theme='dark'] {
+  --aurora-o: 0.42;
+}
+
+/* ---------- Scheme colours (generated from theme.schemes in site-data.js by tools/build.mjs) ---------- */
+/* @schemes */
