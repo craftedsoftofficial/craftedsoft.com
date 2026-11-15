@@ -101,7 +101,7 @@ window.CS_SITE = {
         // Direct link to the installer on GitHub Releases (starts the download).
         // For a new version: upload the new setup file to a new release, then update url, version and size here.
         //   (Or use '#' to show a "download coming soon" message instead.)
-        url: 'https://github.com/delogreleases/chittill-releases/releases/download/v0.1.0/ChitTill-Setup-0.1.0.exe',
+        url: 'https://github.com/craftedsoftofficial/chittill-releases/releases/download/v0.1.0/ChitTill-Setup-0.1.0.exe',
         label: 'Download for Windows',
         version: 'v0.1.0',
         platform: 'Windows 10 & 11 · 64-bit',
