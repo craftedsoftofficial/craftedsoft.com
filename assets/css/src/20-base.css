@@ -41,6 +41,7 @@ ul, ol { padding: 0; }
 /* Pill at the top of a hero */
 .eyebrow { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.4rem 0.9rem 0.4rem 0.45rem; border-radius: 999px; background: var(--surface); border: 1px solid var(--border); font-size: 0.85rem; color: var(--text-2); }
 .eyebrow img { width: 26px; height: 26px; border-radius: 7px; }
+.eyebrow .logo-mark { height: 21px; margin-left: 0.3rem; }
 .eyebrow b { color: var(--text); }
 .eyebrow .dot { margin-left: 0.4rem; }
 

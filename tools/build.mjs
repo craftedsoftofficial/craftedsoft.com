@@ -123,9 +123,8 @@ const pmenu = (R, here) => {
     const pts = (p.highlights || []).slice(0, 3).map((h) => `<li>${esc(h.title)}</li>`).join('')
     return `<div class="pmenu-pane" data-i="${i}" style="--pc:${esc(p.accent || 'var(--c2)')}" hidden><img src="${R}${p.image}" alt="" loading="lazy" width="1440" height="900"><b>${esc(p.name)} · ${esc(p.tagline)}</b><ul>${pts}</ul>${p === here ? '<span class="pmenu-go here">You’re here</span>' : `<a class="pmenu-go" href="${R}${p.url}">Explore ${esc(p.name)} ${icon('arrow')}</a>`}</div>`
   }).join('')
-  const btnIco = here ? `<img src="${R}${here.icon}" alt="" width="28" height="28">` : `<span class="pm-ico">${icon('grid')}</span>`
   return `<div class="pmenu"${here ? ` data-here="${products.indexOf(here)}"` : ''}>
-        <button type="button" class="pmenu-btn" aria-expanded="false" aria-controls="pmenu-panel">${btnIco}<span>Products</span>${icon('down')}</button>
+        <button type="button" class="pmenu-btn" aria-expanded="false" aria-controls="pmenu-panel"><span>Products</span>${icon('down')}</button>
         <div class="pmenu-panel" id="pmenu-panel" hidden>
           <div class="pmenu-list"><div class="pmenu-head">Products</div>${items}<div class="pmenu-sep"></div><a class="pmenu-extra" href="${R}products/"><i>${icon('grid')}</i>All products</a><a class="pmenu-extra" href="${R}contact/?interest=custom"><i>${icon('plus')}</i>Custom software</a></div>
           <div class="pmenu-preview">${panes}</div>
@@ -145,9 +144,8 @@ const header = (R, page, src) => {
   const themeBtn = `<button type="button" class="icon-btn theme-btn" aria-label="Switch theme" title="Switch theme">${icon('sun', 'i-sun')}${icon('moon', 'i-moon')}</button>`
   return `<header class="nav" id="hdr">
     <div class="nav-in">
-      <a class="brand" href="${R || './'}" aria-label="CraftedSoft home"><img class="brand-logo" src="${R}assets/img/logo.svg" alt="" width="32" height="32"><span class="brand-word">CRAFTED</span><span class="brand-div">Soft</span></a>
-      ${pmenu(R, here)}
-      <nav class="nav-links" aria-label="${here ? esc(here.name) + ' sections' : 'Main'}">${links}</nav>
+      ${brandLink(R)}
+      <nav class="nav-links" aria-label="${here ? esc(here.name) + ' sections' : 'Main'}">${pmenu(R, here)}${here && nav.length ? '<span class="nav-sep" aria-hidden="true"></span>' : ''}${links}</nav>
       <div class="nav-act">
         ${schemePicker('header')}
         ${themeBtn}
@@ -165,6 +163,10 @@ const header = (R, page, src) => {
   </header>`
 }
 
+/* The CraftedSoft logo: S mark (tinted by the colour scheme) + wordmark (text colour), drawn by CSS masks
+   from assets/img/logo-mark.svg and logo-word.svg so they follow the scheme and day/night mode. */
+const brandLink = (R) => `<a class="brand" href="${R || './'}" aria-label="CraftedSoft home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-word" aria-hidden="true"></span></a>`
+
 /* ---------- Footer (Delog: brand left, links right, a quiet line under) ---------- */
 const footer = (R) => {
   const reach = [
@@ -176,7 +178,7 @@ const footer = (R) => {
   return `<footer class="footer">
     <div class="f-top">
       <div class="f-brand">
-        <a class="brand" href="${R || './'}"><img class="brand-logo" src="${R}assets/img/logo.svg" alt="" width="32" height="32"><span class="brand-word">CRAFTED</span><span class="brand-div">Soft</span></a>
+        ${brandLink(R)}
         <p>Billing, inventory and custom business software for India’s shops and restaurants. Works offline, your data stays yours.</p>
         <div class="f-reach">${reach}</div>
       </div>
@@ -190,7 +192,7 @@ const footer = (R) => {
       <nav class="f-legal" aria-label="Legal">${LEGAL.map((l) => `<a href="${R}legal/${l.slug}/">${l.title}</a>`).join('')}</nav>
       <button type="button" class="f-top-btn" data-to-top>Back to top ${icon('arrow')}</button>
     </div>
-    <div class="f-word" aria-hidden="true">CraftedSoft</div>
+    <div class="f-word logo-word" aria-hidden="true"></div>
   </footer>
   ${waFab(R)}
   ${helpWidget(R)}`
@@ -203,7 +205,7 @@ function helpWidget(R) {
     <button type="button" class="help__launch" aria-expanded="false" aria-controls="cs-help-panel" aria-label="Open CS Assistant">${icon('message', 'i-open')}${icon('x', 'i-close')}</button>
     <section class="help__panel" id="cs-help-panel" role="dialog" aria-label="CS Assistant" hidden>
       <header class="help__head">
-        <img src="${R}assets/img/logo.svg" alt="" width="38" height="38">
+        <span class="logo-tile" aria-hidden="true"><span class="logo-mark"></span></span>
         <span><b>CS Assistant</b><small>Instant answers, any time</small></span>
         <button type="button" class="help__reset" title="Start over" aria-label="Start over">${icon('refresh')}</button>
         <button type="button" class="help__close" aria-label="Close CS Assistant">${icon('x')}</button>
@@ -446,6 +448,9 @@ const htmlFiles = (dir) =>
   })
 
 /* ---------- Stylesheet: assets/css/src/*.css (in name order) + colour schemes → assets/css/style.css ---------- */
+// Logo SVGs → CSS custom properties (data URIs work as masks from file:// too, unlike url() to a file).
+const svgUri = (p) => 'url("data:image/svg+xml,' + readFileSync(join(SITE_DIR, p), 'utf8').trim().replace(/"/g, "'").replace(/%/g, '%25').replace(/#/g, '%23').replace(/</g, '%3C').replace(/>/g, '%3E').replace(/\s+/g, ' ') + '")'
+const logoCss = () => `:root { --logo-mark: ${svgUri('assets/img/logo-mark.svg')}; --logo-word: ${svgUri('assets/img/logo-word.svg')}; }`
 const hexRgb = (h) => { const n = parseInt(h.replace('#', ''), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255] }
 const schemeCss = () =>
   SCHEMES.map((sc) => {
@@ -465,7 +470,7 @@ const schemeCss = () =>
   if (existsSync(dir)) {
     const parts = readdirSync(dir).filter((x) => x.endsWith('.css')).sort()
     const css = '/* Generated by tools/build.mjs from assets/css/src/*.css: edit those files, then run the build. */\n' +
-      parts.map((x) => `/* ===== ${x} ===== */\n` + readFileSync(join(dir, x), 'utf8').replace('/* @schemes */', schemeCss())).join('\n')
+      parts.map((x) => `/* ===== ${x} ===== */\n` + readFileSync(join(dir, x), 'utf8').replace('/* @schemes */', schemeCss()).replace('/* @logo */', logoCss())).join('\n')
     const out = join(SITE_DIR, 'assets/css/style.css')
     if (!existsSync(out) || readFileSync(out, 'utf8') !== css) writeFileSync(out, css)
   }

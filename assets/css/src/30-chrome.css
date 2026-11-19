@@ -7,14 +7,25 @@
 .nav { position: sticky; top: 0; z-index: 100; height: var(--header-h); border-bottom: 1px solid transparent; transition: background 0.3s, border-color 0.3s, box-shadow 0.3s; }
 .nav.is-scrolled, .nav.open { background: var(--glass); border-bottom-color: var(--border); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4); }
 .nav-in { width: var(--wrap); height: 100%; margin: 0 auto; display: flex; align-items: center; gap: 1rem; }
-.brand { display: inline-flex; align-items: center; gap: 0.6rem; flex: none; }
-.brand-logo { width: 32px; height: 32px; border-radius: 9px; }
-.brand-word { font-family: var(--display); font-weight: 800; font-size: 1.12rem; letter-spacing: 0.2em; }
-.brand-div { margin-left: -0.3rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; background: var(--hl); -webkit-background-clip: text; background-clip: text; color: transparent; }
+/* ---------- Logo: assets/img/logo-mark.svg + logo-word.svg as CSS masks (build fills the two variables).
+   The S mark takes the colour-scheme gradient, the wordmark the text colour, so both follow the scheme and day/night. */
+/* @logo */
+.logo-mark, .logo-word { display: inline-block; flex: none; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; }
+.logo-mark { height: 32px; aspect-ratio: 454 / 524; background: var(--hl); -webkit-mask-image: var(--logo-mark); mask-image: var(--logo-mark); }
+.logo-word { height: 16px; aspect-ratio: 1770 / 247; background: currentColor; -webkit-mask-image: var(--logo-word); mask-image: var(--logo-word); }
+/* App-icon style: solid white tile, S in the scheme gradient (--grad stays dark in Mono, so it shows on white in both themes) */
+.logo-tile { display: inline-grid; place-items: center; flex: none; width: 38px; height: 38px; border-radius: 12px; background: #fff; box-shadow: 0 6px 16px -6px rgb(0 0 0 / 0.35); }
+.logo-tile .logo-mark { height: 62%; background: var(--grad); }
+.brand { display: inline-flex; align-items: center; gap: 0.55rem; flex: none; color: var(--text); }
+.brand .logo-mark { height: 31px; }
+.brand .logo-word { height: 15px; margin-top: 1px; }
 .nav-links { margin-left: auto; display: flex; align-items: center; gap: 0.25rem; }
-.nav-links a { position: relative; padding: 0.5rem 0.85rem; border-radius: 999px; font-size: 0.92rem; color: var(--text-2); transition: color 0.2s, background 0.2s; }
-.nav-links a:hover { color: var(--text); background: var(--surface-2); }
-.nav-links a[aria-current='page'] { color: var(--text); background: var(--surface-2); }
+.nav-links > a { position: relative; padding: 0.5rem 0.85rem; border-radius: 999px; font-size: 0.92rem; color: var(--text-2); transition: color 0.2s, background 0.2s; }
+.nav-links > a:hover { color: var(--text); background: var(--surface-2); }
+.nav-links > a[aria-current='page'] { color: var(--text); background: var(--surface-2); }
+.nav-sep { width: 1px; height: 18px; margin: 0 0.35rem; background: var(--border-2); }
+.nav-links > a, .pmenu-btn { white-space: nowrap; }
+@media (max-width: 1180px) { .nav-links { gap: 0; } .nav-links > a { padding-inline: 0.6rem; } .pmenu-btn { padding-inline: 0.6rem 0.45rem; } .nav-sep { margin: 0 0.2rem; } }
 .nav-act { display: flex; align-items: center; gap: 0.5rem; }
 .nav-links + .nav-act { margin-left: 0.5rem; }
 .nav-menu { display: none; position: relative; width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border-2); background: var(--surface); }
@@ -31,14 +42,13 @@
 
 /* ---------- Products menu: the list on the left, a preview of the hovered product on the right ---------- */
 .pmenu { position: relative; }
-.pmenu-btn { display: inline-flex; align-items: center; gap: 9px; height: 42px; padding: 0 12px 0 7px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font: 600 0.9rem var(--sans); transition: background 0.2s, border-color 0.2s; }
-.pmenu-btn:hover, .pmenu-btn[aria-expanded='true'] { background: var(--surface-2); border-color: var(--border-2); }
-.pmenu-btn img, .pmenu-btn .pm-ico { width: 28px; height: 28px; border-radius: 9px; }
-.pmenu-btn .pm-ico { display: grid; place-items: center; background: var(--primary); color: var(--on-primary); }
-.pmenu-btn .pm-ico .i { width: 15px; height: 15px; }
-.pmenu-btn > .i { width: 16px; height: 16px; color: var(--muted); transition: rotate 0.25s; }
+/* Sits first in the right-hand links and looks like one of them; the panel opens centred under it */
+.pmenu-btn { display: inline-flex; align-items: center; gap: 4px; padding: 0.5rem 0.7rem 0.5rem 0.85rem; border-radius: 999px; color: var(--text-2); font: inherit; font-size: 0.92rem; transition: color 0.2s, background 0.2s; }
+.pmenu-btn:hover, .pmenu-btn[aria-expanded='true'] { color: var(--text); background: var(--surface-2); }
+.pmenu[data-here] .pmenu-btn { color: var(--text); }
+.pmenu-btn > .i { width: 15px; height: 15px; color: var(--muted); transition: rotate 0.25s; }
 .pmenu-btn[aria-expanded='true'] > .i { rotate: 180deg; }
-.pmenu-panel { position: absolute; top: calc(100% + 12px); left: 0; z-index: 120; display: grid; grid-template-columns: 220px 330px; border-radius: 20px; overflow: hidden; background: var(--panel); border: 1px solid var(--border-2); box-shadow: var(--shadow-2); animation: pmenu-in 0.16s ease; }
+.pmenu-panel { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%); z-index: 120; display: grid; grid-template-columns: 220px 330px; border-radius: 20px; overflow: hidden; background: var(--panel); border: 1px solid var(--border-2); box-shadow: var(--shadow-2); animation: pmenu-in 0.16s ease; }
 .pmenu-panel[hidden] { display: none; }
 @keyframes pmenu-in { from { opacity: 0; translate: 0 -6px; } }
 .pmenu-list { padding: 10px; border-right: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
@@ -93,7 +103,7 @@
 /* ---------- Phone menu ---------- */
 .mnav { display: none; }
 @media (max-width: 960px) {
-  .nav-links, .nav-act .nav-cta, .nav-act .schdd, .nav-act .theme-btn, .nav-in > .pmenu { display: none; }
+  .nav-links, .nav-act .nav-cta, .nav-act .schdd, .nav-act .theme-btn { display: none; }
   .nav-menu { display: block; }
   .nav-act { margin-left: auto; }
   .mnav { position: absolute; left: 0; right: 0; top: 100%; display: none; max-height: calc(100vh - var(--header-h)); overflow-y: auto; padding: 14px var(--gutter) 22px; background: var(--panel); border-bottom: 1px solid var(--border); box-shadow: var(--shadow-2); }
@@ -153,8 +163,7 @@
 @keyframes help-in { from { opacity: 0; transform: translateX(14px) scale(0.97); } }
 .help__head { position: relative; overflow: hidden; isolation: isolate; display: flex; align-items: center; gap: 12px; padding: 16px 14px 16px 18px; background: var(--panel-grad); color: var(--on-panel); }
 .help__head::after { content: ''; position: absolute; z-index: -1; width: 200px; height: 200px; right: -70px; top: -120px; border-radius: 50%; background: radial-gradient(circle, rgb(255 255 255 / 0.25), transparent 70%); }
-.help__head img { width: 38px; height: 38px; border-radius: 12px; background: #fff; padding: 3px; }
-.help__head span { margin-right: auto; }
+.help__head > span:not(.logo-tile) { margin-right: auto; }
 .help__head b { display: block; font-family: var(--display); font-weight: 800; font-size: 1rem; }
 .help__head small { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; opacity: 0.85; }
 .help__head small::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #4ade80; }
@@ -201,6 +210,6 @@ body:has(.help.is-open) .wa-fab { opacity: 0; pointer-events: none; }
 
 /* Big faded wordmark along the bottom of the footer, tinted with the colour scheme */
 .footer { padding-bottom: 0; overflow: hidden; }
-.f-word { margin: clamp(1.4rem, 3vw, 2.6rem) 0 -0.14em; text-align: center; font-family: var(--display); font-weight: 800; font-size: clamp(64px, 15.5vw, 272px); line-height: 1; letter-spacing: -0.055em; white-space: nowrap; user-select: none; pointer-events: none;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--c2) 34%, var(--bg)) 10%, color-mix(in oklab, var(--c3) 8%, var(--bg)) 92%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-:root[data-theme='dark'] .f-word { background: linear-gradient(180deg, color-mix(in oklab, var(--c2) 42%, var(--bg)) 10%, color-mix(in oklab, var(--c3) 6%, var(--bg)) 92%); -webkit-background-clip: text; background-clip: text; }
+.f-word { display: block; width: 100%; height: auto; margin: clamp(1.4rem, 3vw, 2.6rem) 0 -1.2%; user-select: none; pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--c2) 34%, var(--bg)) 10%, color-mix(in oklab, var(--c3) 8%, var(--bg)) 92%); }
+:root[data-theme='dark'] .f-word { background: linear-gradient(180deg, color-mix(in oklab, var(--c2) 42%, var(--bg)) 10%, color-mix(in oklab, var(--c3) 6%, var(--bg)) 92%); }
