@@ -2,6 +2,8 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: calc(var(--header-h) + 16px); -webkit-text-size-adjust: 100%; }
 html, body { overflow-x: clip; }
+/* Email addresses: no "ffi"/"fi" ligatures, which drop the i's dot (craftedsoftofficial read as "off1cial") */
+a[href^='mailto:'], a[href^='mailto:'] *, .help__log { font-variant-ligatures: no-common-ligatures; }
 body {
   margin: 0;
   background: var(--bg);

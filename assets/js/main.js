@@ -56,36 +56,42 @@
   })
   requestAnimationFrame(() => requestAnimationFrame(() => $$('.no-anim').forEach((el) => el.classList.remove('no-anim'))))
 
-  /* ---------- Theme (light / dark) ---------- */
-  const setTheme = (t, save) => {
+  /* ---------- Appearance: mode (light / dark / auto) + colour scheme (theme.schemes in site-data.js) ----------
+     Auto (nothing saved in cs-theme) follows the device. Every control carries data-mode-pick / data-scheme-pick,
+     so the header card and the phone menu stay in sync through aria-pressed. */
+  const sysDark = matchMedia('(prefers-color-scheme: dark)')
+  const modeNow = () => store.get('cs-theme') || 'auto'
+  const paintTheme = (t) => {
     doc.dataset.theme = t
     const meta = $('meta[name="theme-color"]')
     if (meta) meta.content = t === 'dark' ? '#050506' : '#ffffff'
-    if (save) store.set('cs-theme', t)
-    $$('.theme-btn').forEach((b) => { const l = t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'; b.setAttribute('aria-label', l); b.title = l })
   }
-  setTheme(doc.dataset.theme || 'light', false)
-  $$('.theme-btn').forEach((b) => b.addEventListener('click', () => {
-    const next = doc.dataset.theme === 'dark' ? 'light' : 'dark'
-    if (document.startViewTransition && !reduced) document.startViewTransition(() => setTheme(next, true))
-    else setTheme(next, true)
-  }))
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { if (!store.get('cs-theme')) setTheme(e.matches ? 'dark' : 'light', false) })
+  const markMode = (m) => $$('[data-mode-pick]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.modePick === m)))
+  const withTransition = (fn) => (document.startViewTransition && !reduced ? document.startViewTransition(fn) : fn())
+  const setMode = (m) => {
+    store.set('cs-theme', m === 'auto' ? null : m)
+    const t = m === 'auto' ? (sysDark.matches ? 'dark' : 'light') : m
+    markMode(m)
+    if (t !== doc.dataset.theme) withTransition(() => paintTheme(t))
+  }
+  paintTheme(doc.dataset.theme || 'light')
+  markMode(modeNow())
+  sysDark.addEventListener('change', (e) => { if (modeNow() === 'auto') paintTheme(e.matches ? 'dark' : 'light') })
 
-  /* ---------- Colour scheme (theme.schemes in site-data.js) ---------- */
-  const picks = $$('[data-scheme-pick]')
   const defScheme = (SITE.theme && SITE.theme.scheme) || 'mono'
-  const markScheme = (id) => picks.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.schemePick === id)))
+  const markScheme = (id) => $$('[data-scheme-pick]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.schemePick === id)))
   const setScheme = (id) => {
-    const apply = () => { doc.dataset.scheme = id; markScheme(id) }
-    if (document.startViewTransition && !reduced) document.startViewTransition(apply)
-    else apply()
+    markScheme(id)
+    if (doc.dataset.scheme !== id) withTransition(() => { doc.dataset.scheme = id })
     store.set('cs-scheme', id === defScheme ? null : id)
   }
   markScheme(doc.dataset.scheme || defScheme)
   document.addEventListener('click', (e) => {
-    const b = e.target.closest && e.target.closest('[data-scheme-pick], [data-scheme-reset]')
-    if (b) setScheme(b.dataset.schemePick || defScheme)
+    const t = e.target.closest && e.target.closest('[data-mode-pick], [data-scheme-pick], [data-appear-reset]')
+    if (!t) return
+    if (t.dataset.modePick) setMode(t.dataset.modePick)
+    else if (t.dataset.schemePick) setScheme(t.dataset.schemePick)
+    else { setScheme(defScheme); setMode('auto') }
   })
   const popMenu = (btn, pop, onOpen) => {
     if (!btn || !pop) return () => {}
@@ -95,7 +101,7 @@
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !pop.hidden) { show(false); btn.focus() } })
     return show
   }
-  popMenu($('.schbtn'), $('#schpop'))
+  popMenu($('.appbtn'), $('#apppop'))
 
   /* ---------- Header: glass once scrolled, phone menu, products menu ---------- */
   const nav = $('#hdr')

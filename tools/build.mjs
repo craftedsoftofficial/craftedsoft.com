@@ -103,17 +103,26 @@ const sprite = () =>
    Brand · Products menu (list + preview) · links · colour scheme · theme · call to action · phone menu.
    Product pages list their own sections in the header instead of the site links, like Delog's product pages:
    <body data-page="product-chittill" data-nav="counter:The counter,features:Features,…">. */
-const swatch = (sc) => (sc.mono ? 'linear-gradient(135deg, #0a0a0c 0 50%, #f4f4f5 50%)' : `linear-gradient(135deg, ${sc.colors[0]}, ${sc.colors[1]} 55%, ${sc.colors[2]})`)
-const schemePicker = (kind) => {
-  if (!PICKER_ON) return ''
-  if (kind === 'mnav')
-    return `<div class="mnav__row"><span>Colours</span><div class="mnav__swatches" role="group" aria-label="Colour scheme">${SCHEMES.map((sc) => `<button type="button" data-scheme-pick="${esc(sc.id)}" style="--sw:${swatch(sc)}" aria-label="${esc(sc.name)}" title="${esc(sc.name)}" aria-pressed="${sc.id === DEFAULT_SCHEME}"></button>`).join('')}</div></div>`
-  return `<div class="schdd">
-          <button type="button" class="schbtn" aria-expanded="false" aria-controls="schpop" aria-label="Colour scheme" title="Colour scheme"><span></span></button>
-          <div class="schpop" id="schpop" role="dialog" aria-label="Colour scheme" hidden>
-            <div class="schpop__head"><b>Colour scheme</b><small>Black &amp; white, or a touch of colour</small></div>
-            <div class="schpop__grid" role="group" aria-label="Colour schemes">${SCHEMES.map((sc) => `<button type="button" class="schopt" data-scheme-pick="${esc(sc.id)}" style="--sw:${swatch(sc)}" aria-pressed="${sc.id === DEFAULT_SCHEME}"><i>${icon('check')}</i>${esc(sc.name)}</button>`).join('')}</div>
-            <div class="schpop__foot"><span>Saved on this device</span><button type="button" data-scheme-reset>Reset</button></div>
+/* Appearance: one header button (current mode icon + a dot in the current colour) opening a card with
+   Mode (Light / Dark / Auto, Auto follows the device) and Colour (a mini page preview per scheme). The phone menu
+   shows the same controls inline. main.js keeps every copy in sync (aria-pressed) and saves to this device. */
+const swatchFill = (sc) => (sc.mono ? 'var(--text)' : `linear-gradient(135deg, ${sc.colors[0]}, ${sc.colors[1]} 55%, ${sc.colors[2]})`)
+const MODES = [['light', 'Light', 'sun'], ['dark', 'Dark', 'moon'], ['auto', 'Auto', 'monitor']]
+const appearanceBody = () => {
+  const modes = `<div class="appear__seg" role="group" aria-label="Mode">${MODES.map(([id, label, ic]) => `<button type="button" data-mode-pick="${id}" aria-pressed="${id === 'auto'}">${icon(ic)}<span>${label}</span></button>`).join('')}</div>`
+  const colours = PICKER_ON
+    ? `<div class="appear__label">Colour</div><div class="appear__grid" role="group" aria-label="Colour scheme">${SCHEMES.map((sc) => `<button type="button" class="appear__sw" data-scheme-pick="${esc(sc.id)}" style="--sw:${swatchFill(sc)}" aria-pressed="${sc.id === DEFAULT_SCHEME}"><span class="appear__pv" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="appear__name">${esc(sc.name)}</span><span class="appear__tick" aria-hidden="true">${icon('check')}</span></button>`).join('')}</div>`
+    : ''
+  return `<div class="appear__label">Mode</div>${modes}${colours}`
+}
+const appearance = (kind) => {
+  if (kind === 'mnav') return `<div class="mnav__appear"><div class="mnav__appear-head"><b>Appearance</b><button type="button" data-appear-reset>Reset</button></div>${appearanceBody()}</div>`
+  return `<div class="appdd">
+          <button type="button" class="icon-btn appbtn" aria-expanded="false" aria-controls="apppop" aria-label="Appearance: mode and colour" title="Appearance">${icon('sun', 'i-sun')}${icon('moon', 'i-moon')}${PICKER_ON ? '<span class="appbtn__dot" aria-hidden="true"></span>' : ''}</button>
+          <div class="apppop" id="apppop" role="dialog" aria-label="Appearance" hidden>
+            <div class="apppop__head"><b>Appearance</b><small>Saved on this device</small></div>
+            ${appearanceBody()}
+            <div class="apppop__foot"><button type="button" data-appear-reset>${icon('refresh')}Reset to default</button></div>
           </div>
         </div>`
 }
@@ -141,14 +150,12 @@ const header = (R, page, src) => {
   const cta = here
     ? `<a class="btn btn-primary btn-sm nav-cta" href="#get">Get ${esc(here.name)}</a>`
     : `<a class="btn btn-primary btn-sm nav-cta" href="${R}contact/?interest=demo">Book a demo</a>`
-  const themeBtn = `<button type="button" class="icon-btn theme-btn" aria-label="Switch theme" title="Switch theme">${icon('sun', 'i-sun')}${icon('moon', 'i-moon')}</button>`
   return `<header class="nav" id="hdr">
     <div class="nav-in">
       ${brandLink(R)}
       <nav class="nav-links" aria-label="${here ? esc(here.name) + ' sections' : 'Main'}">${pmenu(R, here)}${here && nav.length ? '<span class="nav-sep" aria-hidden="true"></span>' : ''}${links}</nav>
       <div class="nav-act">
-        ${schemePicker('header')}
-        ${themeBtn}
+        ${appearance('header')}
         ${cta}
         <button type="button" class="nav-menu" aria-label="Open menu" aria-expanded="false" aria-controls="mnav"><span></span><span></span></button>
       </div>
@@ -156,8 +163,7 @@ const header = (R, page, src) => {
     <div class="mnav" id="mnav">
       <div class="mnav__links"><a href="${R || './'}">Home</a><a href="${R}products/">Products</a><a href="${R}services/">Services</a><a href="${R}about/">About</a><a href="${R}contact/">Contact</a></div>
       <div class="mnav__prods">${products.map((p) => `<a href="${R}${p.url}"><img src="${R}${p.icon}" alt="" width="38" height="38"><span><b>${esc(p.name)}</b><small>${esc(p.tagline)}</small></span></a>`).join('')}</div>
-      <div class="mnav__row"><span>Appearance</span>${themeBtn}</div>
-      ${schemePicker('mnav')}
+      ${appearance('mnav')}
       <a class="btn btn-primary btn-lg" href="${R}contact/?interest=demo">Book a free demo ${icon('arrow')}</a>
     </div>
   </header>`
