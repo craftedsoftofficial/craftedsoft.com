@@ -138,13 +138,14 @@ window.CS_SITE = {
         ['wifioff', 'Works offline'],
         ['calendar', '14-day free trial']
       ],
-      // DUMMY for now: put Platera's GitHub release link here (e.g. …/releases/latest/download/Platera-Setup.exe).
+      // Direct link to the installer on GitHub Releases (starts the download).
+      // For a new version: upload the new setup file to a new release, then update url, version and size here.
       download: {
-        url: '#',
+        url: 'https://github.com/craftedsoftofficial/platera-releases/releases/download/v0.1.0/Platera-Setup.exe',
         label: 'Download for Windows',
         version: 'v0.1.0',
         platform: 'Windows 10 & 11 · 64-bit',
-        size: ''
+        size: '121 MB'
       },
       url: 'products/platera/'
     }

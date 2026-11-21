@@ -1,0 +1,6 @@
+# Netlify redirects. Old page addresses from earlier versions of the site go to their new folders.
+# (These used to be small redirect pages like products/chittill.html, but on Netlify a file named X.html next to
+#  a folder X/ takes over the folder's address and the page loops or shows blank, so they live here instead.)
+/products.html            /products/            301
+/contact.html             /contact/             301
+/products/chittill.html   /products/chittill/   301
